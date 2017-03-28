@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Login from './login/Login';
 
 class App extends Component {
   render() {
+    const defaultAvatarSRC = require("./img/avatar.jpg");
+    const avatarSRC = this.props.avatarSRC ? this.props.avatarSRC : defaultAvatarSRC;
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <Login avatarSRC={avatarSRC}/>
       </div>
     );
   }

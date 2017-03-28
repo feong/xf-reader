@@ -1,0 +1,24 @@
+.loginPanel {
+    display: flex;
+    flex-flow: column nowrap;
+    /*align-items: center;*/
+    justify-content: space-around;
+}
+
+.loginAvatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+}
+
+.loginButton {
+    font-size: 1.6rem;
+    color: white;
+    background-color: deepskyblue;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 40px;
+    width: 60%;
+    min-width: 200px;
+    text-align: center;
+}
