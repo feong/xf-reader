@@ -1,7 +1,13 @@
 .loginPanel {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: 20px;
     display: flex;
     flex-flow: column nowrap;
-    /*align-items: center;*/
+    align-items: center;
     justify-content: space-around;
 }
 
@@ -21,4 +27,5 @@
     width: 60%;
     min-width: 200px;
     text-align: center;
+    text-decoration: none;
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Login.css';
+import URLS from 'util/urls';
 
 class Login extends Component {
     render() {
@@ -7,9 +8,9 @@ class Login extends Component {
             <div className="loginPanel">
                 <h1>晓风的阅读器</h1>
                 <img className="loginAvatar" src={this.props.avatarSRC} alt="Avatar"/>
-                <div className="loginButton">
+                <a className="loginButton" href={URLS.LOGIN}>
                     Login with Inoreader
-                </div>
+                </a>
             </div>
         );
     }
