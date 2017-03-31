@@ -9,7 +9,7 @@ class Login extends Component {
                 <h1>晓风的阅读器</h1>
                 <img className="loginAvatar" src={this.props.avatarSRC} alt="Avatar"/>
                 <a className="loginButton" href={URLS.LOGIN}>
-                    Login with Inoreader
+                    Sign in with Inoreader
                 </a>
             </div>
         );

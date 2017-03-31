@@ -7,9 +7,13 @@
     "react-dom": "^15.4.2"
   },
   "devDependencies": {
-    "react-scripts": "0.9.5"
+    "react-scripts": "0.9.5",
+    "cors": "^2.8.3",
+    "express": "^4.15.2",
+    "request": "^2.81.0"
   },
   "scripts": {
+    "server": "nohup node src/server/app.js &",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
