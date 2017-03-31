@@ -5,12 +5,15 @@ export const APP_PRI = `read+write`;
 export const APP_STR = `xiaofengsrssreader`;
 
 export const INOREADER_HOST = `https://www.inoreader.com`;
-export const SERVER_HOST = `http://localhost:3001`;
+
+export const SERVER_INOREADER_HOST = `http://localhost:3001`;
+export const SERVER_INOREADER_API = `${SERVER_INOREADER_HOST}/reader/api/0`;
 
 const URLS = 
 {
     LOGIN: `${INOREADER_HOST}/oauth2/auth?client_id=${APP_ID}&redirect_uri=${APP_URL}&response_type=code&scope=${APP_PRI}&state=${APP_STR}`,
-    TOKEN: `${SERVER_HOST}/oauth2/token`
+    TOKEN: `${SERVER_INOREADER_HOST}/oauth2/token`,
+    USERINFO: `${SERVER_INOREADER_API}/user-info`
 };
 
 export default URLS;
