@@ -11,7 +11,73 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-if(window.location.search) {
+if(User.accessToken) {
+  let now = new Date();
+  let expiresDate = User.expiresDate;
+  if(now > expiresDate) {
+    // Fresh Token
+    InoreaderRequest.refreshToken((json)=>{
+    User.accessToken = json.access_token;
+    User.tokenType = json.token_type;
+    User.refreshToken = json.refresh_token;
+    User.expires = json.expires_in;
+
+    // InoreaderRequest.getSubscriptions((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
+
+    // InoreaderRequest.getUnreadCounters((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
+
+
+    
+    }, (json)=>{
+      console.log(json);
+    });
+  } else {
+    // Get Info
+    // InoreaderRequest.getSubscriptions((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
+
+    // const id = `feed/http://feeds2.feedburner.com/cnbeta-full`;
+    // const id = `feed%2fhttp%3a%2f%2ffeeds2.feedburner.com%2fcnbeta-full`;
+    const id = `feed/http://feeds.feedburner.com/solidot`;
+    // const id = `feed%2fhttp%3a%2f%2ffeeds.feedburner.com%2fsolidot`;
+    // const id = `feed%2Fhttp%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Fscience1`;
+    InoreaderRequest.getUnreadArticles((json)=>{
+      console.log(json);
+    }, (json)=>{
+      console.log(json);
+    }, id);
+
+    // InoreaderRequest.getStarArticles((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
+
+
+    // InoreaderRequest.getUnreadArticles((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
+
+    // InoreaderRequest.test((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // }, id);
+  }
+} else if(window.location.search) {
   // let state = getURLParameter('state');
   let code = getURLParameter('code');
 
@@ -20,13 +86,16 @@ if(window.location.search) {
     User.tokenType = json.token_type;
     User.refreshToken = json.refresh_token;
     User.expires = json.expires_in;
-    InoreaderRequest.getUserInfo((json)=>{
-      console.log(json);
-    }, (json)=>{
-      console.log(json);
-    }
-      
-    );
+    // InoreaderRequest.getUserInfo((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
+    // InoreaderRequest.getUnreadCounters((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // });
   }, (json)=>{
     console.log(json);
   });

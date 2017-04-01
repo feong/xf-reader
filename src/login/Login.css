@@ -1,3 +1,18 @@
+.loginPanelBox {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.willowImg {
+    position: absolute;
+    margin: -10px;
+    height: 30%;
+    max-height: 300px;
+}
+
 .loginPanel {
     position: absolute;
     top: 0px;
@@ -9,6 +24,10 @@
     flex-flow: column nowrap;
     align-items: center;
     justify-content: space-around;
+}
+
+.loginTitle {
+    text-shadow: 0PX 0PX 8PX white;
 }
 
 .loginAvatar {
@@ -26,6 +45,7 @@
     border-radius: 40px;
     width: 60%;
     min-width: 200px;
+    max-width: 300px;
     text-align: center;
     text-decoration: none;
 }

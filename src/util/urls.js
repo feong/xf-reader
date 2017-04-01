@@ -13,7 +13,10 @@ const URLS =
 {
     LOGIN: `${INOREADER_HOST}/oauth2/auth?client_id=${APP_ID}&redirect_uri=${APP_URL}&response_type=code&scope=${APP_PRI}&state=${APP_STR}`,
     TOKEN: `${SERVER_INOREADER_HOST}/oauth2/token`,
-    USERINFO: `${SERVER_INOREADER_API}/user-info`
+    USERINFO: `${SERVER_INOREADER_API}/user-info`,
+    UNREADERCOUNTERS: `${SERVER_INOREADER_API}/unread-count`,
+    SUBSCRIPTIONS: `${SERVER_INOREADER_API}/subscription/list`,
+    ARTICLES: `${SERVER_INOREADER_API}/stream/contents`
 };
 
 export default URLS;
