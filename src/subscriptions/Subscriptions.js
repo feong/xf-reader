@@ -5,7 +5,7 @@ class SubscriptionsItem extends Component {
         return (
             <div>
                 <img className="subItem" src={this.props.src}/>
-                <p className="subTitle"/>
+                <p className="subTitle">{this.props.title}</p>
             </div>
         );
     }
@@ -14,7 +14,7 @@ class SubscriptionsItem extends Component {
 class Subscriptions extends Component {
     render() {
         return (
-            <SubscriptionsItem/>
+            <SubscriptionsItem src={this.props.src} title={this.props.title}/>
         );
     }
 }

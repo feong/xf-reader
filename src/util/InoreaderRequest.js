@@ -7,7 +7,7 @@ const CONTENT_TYPE_VALUE = `application/x-www-form-urlencoded`;
 
 const HttpRequest = {
     request: new XMLHttpRequest(),
-    post(url, body, success, fail, noAuth) {
+    post(url, body, success, fail) {
         this.request.open('POST', url, true);
         this.request.setRequestHeader(CONTENT_TYPE, CONTENT_TYPE_VALUE);
         if(url !== URLS.TOKEN && User) {
@@ -37,7 +37,7 @@ const HttpRequest = {
             if(this.request.readyState === 4){
                 console.log(this.request.responseText);
                 let json = JSON.parse(this.request.responseText);
-                if(this.request.state === 200 && !json.error) {
+                if(this.request.status === 200 && !json.error) {
                     success(json);
                 } else {
                     fail(json);

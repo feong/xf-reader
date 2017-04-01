@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
+import Subscriptions from './subscriptions/Subscriptions';
 
+import InoreaderRequest from 'util/InoreaderRequest';
+import User from 'user/user'
 
 // {"subscriptions":[
 //   {"id":"feed\/http:\/\/feeds.feedburner.com\/solidot","title":"Solidot","categories":[],"sortid":"028C41ED","firstitemmsec":1491026517226207,"url":"http:\/\/feeds.feedburner.com\/solidot","htmlUrl":"http:\/\/www.solidot.org\/","iconUrl":"https:\/\/www.inoreader.com\/cache\/favicons\/s\/o\/l\/www_solidot_org_16x16.png"},
@@ -39,14 +42,71 @@ import Login from './login/Login';
 
 
 class App extends Component {
+  getURLParameter(name) {
+      return decodeURIComponent((new RegExp('[?|&]' + name + '=([^&;]+?)(&|#|;|$)').exec(location.search)||[""])[1].replace(/\+/g, '%20'))||null;
+  }
   render() {
-    const defaultAvatarSRC = require("./img/avatar.jpg");
-    const avatarSRC = this.props.avatarSRC ? this.props.avatarSRC : defaultAvatarSRC;
-    return (
-      <div className="App">
-        <Login avatarSRC={avatarSRC}/>
-      </div>
-    );
+
+    let isLogin = false;
+    const search = this.props.search;
+    if(User.accessToken) {
+      let now = new Date();
+      let expiresDate = User.expiresDate;
+      if(now > expiresDate) {
+        // Fresh Token
+        InoreaderRequest.refreshToken((json)=>{
+        User.accessToken = json.access_token;
+        User.tokenType = json.token_type;
+        User.refreshToken = json.refresh_token;
+        User.expires = json.expires_in;
+        isLogin = true;
+        }, (json)=>{
+          console.log(json);
+        });
+      } else {
+        isLogin = true;
+      }
+    } else if(search) {
+      // let state = getURLParameter('state');
+      let code = this.getURLParameter('code');
+
+      InoreaderRequest.requestToken(code, (json)=>{
+        User.accessToken = json.access_token;
+        User.tokenType = json.token_type;
+        User.refreshToken = json.refresh_token;
+        User.expires = json.expires_in;
+        isLogin = true;
+      }, (json)=>{
+        console.log(json);
+      });
+    }
+
+    if(isLogin) {
+      InoreaderRequest.getSubscriptions((json)=>{
+        console.log(json);
+        const firstSub = json.subscriptions[0];
+        // const src = require(firstSub.iconUrl);
+        const src = require("./img/avatar.jpg");
+        const title = firstSub.title;
+        return (
+          <div className="App">
+            <Subscriptions src={src} title={title}/>
+          </div>
+        );
+      }, (json)=>{
+        console.log(json);
+      });
+    } else {
+      const defaultAvatarSRC = require("./img/avatar.jpg");
+      const avatarSRC = this.props.avatarSRC ? this.props.avatarSRC : defaultAvatarSRC;
+
+      return (
+        <div className="App">
+          <Login avatarSRC={avatarSRC}/>
+        </div>
+      );
+    }
+    
   }
 }
 

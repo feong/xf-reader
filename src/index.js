@@ -7,10 +7,13 @@ import './index.css';
 
 //npm run server && NODE_PATH=./src npm start
 ReactDOM.render(
-  <App />,
+  <App search={window.location.search}/>,
   document.getElementById('root')
 );
 
+
+
+/*
 if(User.accessToken) {
   let now = new Date();
   let expiresDate = User.expiresDate;
@@ -41,22 +44,22 @@ if(User.accessToken) {
     });
   } else {
     // Get Info
-    // InoreaderRequest.getSubscriptions((json)=>{
-    //   console.log(json);
-    // }, (json)=>{
-    //   console.log(json);
-    // });
-
-    // const id = `feed/http://feeds2.feedburner.com/cnbeta-full`;
-    // const id = `feed%2fhttp%3a%2f%2ffeeds2.feedburner.com%2fcnbeta-full`;
-    const id = `feed/http://feeds.feedburner.com/solidot`;
-    // const id = `feed%2fhttp%3a%2f%2ffeeds.feedburner.com%2fsolidot`;
-    // const id = `feed%2Fhttp%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Fscience1`;
-    InoreaderRequest.getUnreadArticles((json)=>{
+    InoreaderRequest.getSubscriptions((json)=>{
       console.log(json);
     }, (json)=>{
       console.log(json);
-    }, id);
+    });
+
+    // const id = `feed/http://feeds2.feedburner.com/cnbeta-full`;
+    // const id = `feed%2fhttp%3a%2f%2ffeeds2.feedburner.com%2fcnbeta-full`;
+    // const id = `feed/http://feeds.feedburner.com/solidot`;
+    // const id = `feed%2fhttp%3a%2f%2ffeeds.feedburner.com%2fsolidot`;
+    // const id = `feed%2Fhttp%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Fscience1`;
+    // InoreaderRequest.getUnreadArticles((json)=>{
+    //   console.log(json);
+    // }, (json)=>{
+    //   console.log(json);
+    // }, id);
 
     // InoreaderRequest.getStarArticles((json)=>{
     //   console.log(json);
@@ -104,4 +107,4 @@ if(User.accessToken) {
 
 function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=([^&;]+?)(&|#|;|$)').exec(location.search)||[""])[1].replace(/\+/g, '%20'))||null;
-}
+}*/
