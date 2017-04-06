@@ -1,0 +1,24 @@
+.loadingBox {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.loginAvatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    animation: avatarRotate linear 8s infinite;
+}
+
+@keyframes avatarRotate{
+    to{
+        transform: rotate(360deg);
+    }
+}

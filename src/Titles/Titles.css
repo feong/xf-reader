@@ -1,4 +1,4 @@
-.subscriptionsItem {
+.titleItem {
     display: flex;
     flex-flow: row nowrap;
     font-size: 1.6rem;
@@ -6,19 +6,27 @@
     border: thin solid black;
 }
 
-.subItemImg {
-    height: 16px;
-    width: 16px;
+.titleImg {
+    height: 64px;
+    width: 64px;
     padding: 18px;
-    background-color: yellow;
 }
 
-.subCount {
+.titleTextBox {
+    margin-top: 5px;
+}
+
+.titleAuthor {
+    font-size: 1.2rem;
+}
+
+.titleLater {
     position: absolute;
+    font-size: 3.0rem;
     right: 10px;
 }
 
-.subscriptionsList {
+.titleList {
     margin: 0px;
     padding: 0px;
 }

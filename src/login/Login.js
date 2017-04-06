@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Login.css';
-import URLS from 'util/urls';
+import URLS from '../util/urls';
 
 class Login extends Component {
     render() {

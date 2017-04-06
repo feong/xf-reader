@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import InoreaderRequest from 'util/InoreaderRequest';
-import User from 'user/user'
+// import InoreaderRequest from './util/InoreaderRequest';
+// import User from './user/user'
 import './index.css';
 
 //npm run server && NODE_PATH=./src npm start

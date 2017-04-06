@@ -1,5 +1,5 @@
 import URLS, {APP_ID, APP_URL, APP_KEY} from './urls';
-import User from 'user/user';
+import User from '../user/user';
 
 const CONTENT_TYPE = `Content-type`;
 const AUTHORIZATION = `Authorization`;

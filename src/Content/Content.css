@@ -1,0 +1,25 @@
+.functionBar {
+    font-size: 2.5rem;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.starButton {
+    margin-right: 8px;
+    font-size: 2.0rem;
+}
+
+.content {
+    font-size: 1.6rem;
+    margin: 8px;
+}
+
+h1.title {
+    text-align: center;
+    margin: 0px;
+}
+
+h5.author {
+    margin: 0px;
+    text-align: right;
+    color: grey;
+}
