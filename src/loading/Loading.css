@@ -1,9 +1,10 @@
 .loadingBox {
-    position: absolute;
+    /*position: absolute;
     top: 0px;
     bottom: 0px;
     left: 0px;
-    right: 0px;
+    right: 0px;*/
+    flex: auto;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;

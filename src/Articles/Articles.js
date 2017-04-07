@@ -6,17 +6,26 @@ class Articles {
         return this._subscriptions;
     }
 
+    get subscriptionsID() {
+        return this._subscriptionsID;
+    }
+
     get unreadArticles() {
         return this._unreadArticles;
     }
 
-    set currentArticle(id) {
-        this.id = id;
+    set currentArticleID(id) {
+        this._currentArticleID = id;
     }
+
+    get currentArticleID() {
+        return this._currentArticleID;
+    }    
 
     get currentArticle() {
         // if(TEST) return JSON.parse(testContents).items[0];
-        let articles = this.unreadArticles.filter(a=>a.id === this.id);
+        if(!this.unreadArticles) return null;
+        let articles = this.unreadArticles.filter(a=>a.id === this.currentArticleID);
         return articles.length == 0 ? null : articles[0];
     }
 
@@ -73,6 +82,7 @@ class Articles {
     }
 
     getUnreadArticles(success, fail, id) {
+        this._subscriptionsID = id;
         if(TEST) {
             const articles = JSON.parse(testContents).items;
             this._unreadArticles = articles;

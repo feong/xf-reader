@@ -4,6 +4,9 @@ import './Content.css';
 class Content extends Component {
     render() {
         const article = this.props.content;
+        if(!article) {
+            return (<div className="content"></div>);
+        }
         const timeStamp = new Date(article.published).toLocaleString();
         return (
             <div className="content">   

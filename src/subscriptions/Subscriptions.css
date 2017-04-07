@@ -2,23 +2,34 @@
     display: flex;
     flex-flow: row nowrap;
     font-size: 1.6rem;
-    background-color: gray;
-    border: thin solid black;
+    background-color: lightgray;
+    border: thin solid gray;
 }
 
 .subItemImg {
     height: 16px;
     width: 16px;
     padding: 18px;
-    background-color: yellow;
 }
 
 .subCount {
-    position: absolute;
-    right: 10px;
+    flex: auto;
+    text-align: right;
+    margin-right: 10px;
 }
 
 .subscriptionsList {
     margin: 0px;
     padding: 0px;
+    min-width: 500px;
+    max-width: 500px;
+    flex: auto;
+    /*animation: turnThin 1s forwards;*/
+}
+
+@keyframes turnThin {
+    to {
+        width: 53px;
+        min-width: 53px;
+    }
 }

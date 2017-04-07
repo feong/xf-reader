@@ -4,19 +4,20 @@ import './App.css';
 import Loading from './loading/Loading';
 import Login from './login/Login';
 import Subscriptions from './subscriptions/Subscriptions';
-import Titles from './Titles/Titles';
-import Content from './Content/Content';
+import Titles from './titles/Titles';
+import Content from './content/Content';
 
 import InoreaderRequest from './util/InoreaderRequest';
 import User from './user/user'
 
-import Articles from './Articles/Articles';
+import Articles from './articles/Articles';
 
 class App extends Component {
-  subscriptions = []
-  unreadCounts = []
-  state = {status:'init'}
-
+  subscriptions = [];
+  unreadCounts = [];
+  state = {status:'init'};
+  viewing = null;
+  loading = false;
   componentWillMount() {
     const search = this.props.search;
     if(User.accessToken) {
@@ -41,43 +42,82 @@ class App extends Component {
   }
 
   titleClicked(id) {
-    Articles.currentArticle = id;
-    this.setState({status:'content'});
+    this.viewing = 'content';
+    if(Articles.currentArticleID === id) return;
+
+    Articles.currentArticleID = id;
+    this.setStateByWidth();
+    // this.setState({status:'content'});
   }
 
   subscriptionClicked(id) {
+    this.viewing = 'titles';
+    if(Articles.subscriptionsID === id) return;
+
+    Articles.currentArticleID = null;
     Articles.getUnreadArticles((json)=>{
-      this.setState({status:'titles'});
+      this.loading = false;
+      this.setStateByWidth();
+      // this.setState({status:'titles'});
     }, ()=>{}, id);
-    this.setState({status:'loading'});
+    // this.setState({status:'loading'});
+    this.loading = true;
+    this.setStateByWidth();
+  }
+
+  setStateByWidth() {
+    const width = document.body.clientWidth;
+      this.setState({status:'3-columns'}); return;
+    if(width < 1000) {
+      if(this.viewing === 'titles') {
+          this.setState({status:'1-column-titles'});
+      } else if (this.viewing === 'content') {
+          this.setState({status:'1-column-content'});
+      } else {
+          this.setState({status:'1-column-subscriptions'});
+      }
+    } else {
+      this.setState({status:'3-columns'});
+    }
   }
 
   render() {
-
     if(this.state.status === 'init') {
       const defaultAvatarSRC = require("./img/avatar.jpg");
       const avatarSRC = this.props.avatarSRC ? this.props.avatarSRC : defaultAvatarSRC;
       return (
-        <div className="app">
-          <Login avatarSRC={avatarSRC}/>
-        </div>
+        <Login avatarSRC={avatarSRC}/>
       );
-    } else if(this.state.status === 'content') {
+    } else if(this.state.status === '1-column-subscriptions') {
       return (
         <div className="app">
-          <Content content={Articles.currentArticle}/>
+          <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)}/>
         </div>
       );
-    } else if(this.state.status === 'titles') {
+    } else if(this.state.status === '1-column-titles') {
       return (
         <div className="app">
           <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)}/>
         </div>
       );
-    } else if(this.state.status === 'subscriptions') {
+    } else if(this.state.status === '1-column-content') {
       return (
         <div className="app">
+          <Content content={Articles.currentArticle}/>
+        </div>
+      );
+    } else if(this.state.status === '3-columns') {
+      return (
+        this.loading ? 
+        <div className="app">
           <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)}/>
+          <Loading/>
+        </div>
+        :
+        <div className="app">
+          <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)} thin={this.viewing === 'content' && document.body.clientWidth < 1500}/>
+          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)}/>
+          <Content content={Articles.currentArticle}/>
         </div>
       );
     } else if(this.state.status === 'auth') {
@@ -114,15 +154,14 @@ class App extends Component {
       });
     } else if(this.state.status === 'guest') {
       Articles.getSubscriptions((json)=>{
-        this.setState({status:'subscriptions'});
+        this.setStateByWidth();
+        // this.setState({status:'subscriptions'});
       }, ()=>{
 
       });
     } 
     return (
-      <div className="app">
-        <Loading/>
-      </div>
+      <Loading/>
     );
 
 
