@@ -48,7 +48,7 @@ class Articles {
             if(success) {
                 setTimeout(function() {
                     success(subscriptions);
-                }, 1000);
+                }.bind(this), 1000);
             }
             return;
         }
@@ -82,24 +82,48 @@ class Articles {
     }
 
     getUnreadArticles(success, fail, id) {
+        this._unreadArticles = null;
         this._subscriptionsID = id;
         if(TEST) {
             const articles = JSON.parse(testContents).items;
-            this._unreadArticles = articles;
             if(success) {
                 setTimeout(function() {
+                    this._unreadArticles = articles;
                     success(articles);
-                }, 1000);
+                }.bind(this), 1000);
             }
             return;
         }
         InoreaderRequest.getUnreadArticles((json)=>{
             const articles = JSON.parse(json).items;
             this._unreadArticles = articles;
-            if(success) success(articles);
+            if(success) {
+                this._unreadArticles = articles;
+                success(articles);
+            }
         },()=>{
             if(fail) fail();
         }, id);
+    }
+
+    starArticle(success, fail, article, stared) {
+        article.star = stared;
+        // TODO start it on server
+    }
+
+    unstarArticle(success, fail, article) {
+        article.star = false;
+        // TODO start it on server
+    }
+
+    laterArticle(success, fail, article) {
+        article.later = true;
+        // TODO start it on server
+    }
+
+    unlaterArticle(success, fail, article) {
+        article.star = false;
+        // TODO start it on server
     }
 }
 

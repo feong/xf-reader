@@ -20,11 +20,31 @@
     font-size: 1.2rem;
 }
 
-.titleLater {
+.titleButtons {
     flex: auto;
-    text-align: right;
-    font-size: 3.0rem;
+    /*text-align: right;*/
     margin-right: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    position: relative;
+    top: 14px;
+}
+
+.titleButtons > p {
+    margin: 0px;
+    padding: 0px;
+}
+
+.titleStar {
+    position: absolute;
+    font-size: 2.6rem;
+    right: 0px;
+}
+
+.titleLater {
+    position: absolute;
+    font-size: 3.0rem;
+    top: 3.0rem;
+    right: -4px;
 }
 
 .titleList {

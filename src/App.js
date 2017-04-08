@@ -65,6 +65,11 @@ class App extends Component {
     this.setStateByWidth();
   }
 
+  starArticle(article, stared) {
+    Articles.starArticle(null, null, article, stared);
+    this.setStateByWidth();
+  }
+
   setStateByWidth() {
     const width = document.body.clientWidth;
       this.setState({status:'3-columns'}); return;
@@ -97,18 +102,27 @@ class App extends Component {
     } else if(this.state.status === '1-column-titles') {
       return (
         <div className="app">
-          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)}/>
+          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)} onStar={this.starArticle.bind(this)}/>
         </div>
       );
     } else if(this.state.status === '1-column-content') {
       return (
         <div className="app">
-          <Content content={Articles.currentArticle}/>
+          <Content content={Articles.currentArticle} onStar={this.starArticle.bind(this)}/>
         </div>
       );
     } else if(this.state.status === '3-columns') {
       return (
-        this.loading ? 
+        
+        <div className="app">
+          <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)} thin={this.viewing === 'content' && document.body.clientWidth < 1500}/>
+          {this.loading && <Loading/>}
+          {/* If it is loading, nulls will be return of following components.*/}
+          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)} onStar={this.starArticle.bind(this)}/>
+          <Content content={Articles.currentArticle} onStar={this.starArticle.bind(this)}/>
+        </div>
+        
+        /*this.loading ? 
         <div className="app">
           <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)}/>
           <Loading/>
@@ -116,9 +130,9 @@ class App extends Component {
         :
         <div className="app">
           <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)} thin={this.viewing === 'content' && document.body.clientWidth < 1500}/>
-          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)}/>
+          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)} onStar={this.starArticle.bind(this)}/>
           <Content content={Articles.currentArticle}/>
-        </div>
+        </div>*/
       );
     } else if(this.state.status === 'auth') {
       const state = this.getURLParameter('state');
