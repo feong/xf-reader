@@ -10,7 +10,14 @@
 
 .content {
     font-size: 1.6rem;
+    min-width: 500px;
+    max-width: 800px;
+    overflow-y: scroll;
+}
+
+.innerContent{
     margin: 8px;
+
 }
 
 h1.title {
@@ -22,4 +29,8 @@ h5.author {
     margin: 4px;
     text-align: center;
     color: grey;
+}
+
+.article img {
+    max-width: 800px;
 }

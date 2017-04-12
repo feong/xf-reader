@@ -27,14 +27,23 @@ class App extends Component {
     } else if(search) {
       this.setState({status: 'auth'});
     }
+    // this.setState({status: 'guest'});
+
 
     // this.subscriptions = JSON.parse(testSubScriptions).subscriptions;
     // this.subscriptionsUnreadCounts = JSON.parse(testSubScriptionsUnreadCounts).unreadcounts;
     // this.findUnreadCounts(this.subscriptions, this.subscriptionsUnreadCounts);
-    this.setState({status: 'guest'});
     // this.setState({status: 'content'});
     // this.contents = JSON.parse(testContents).items;
     // console.log(this.contents);
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.setStateByWidth.bind(this));
+  }
+
+  componentWillUnMount() {
+    window.removeEventListener("resize", this.setStateByWidth.bind(this));
   }
 
   getURLParameter(name) {
@@ -142,7 +151,7 @@ class App extends Component {
         User.tokenType = json.token_type;
         User.refreshToken = json.refresh_token;
         User.expires = json.expires_in;
-        this.setState('login');
+        this.setState({status:'login'});
         }, (json)=>{
           console.log(json);
       });
@@ -152,17 +161,18 @@ class App extends Component {
         User.tokenType = json.token_type;
         User.refreshToken = json.refresh_token;
         User.expires = json.expires_in;
-        this.setState('login');
+        this.setState({status:'login'});
         }, (json)=>{
           console.log(json);
       });
     } else if(this.state.status === 'login') {
-      InoreaderRequest.getSubscriptions((json)=>{
-        console.log(json);
-        const firstSub = json.subscriptions[0];
-        // const src = require(firstSub.iconUrl);
-        const src = require("./img/avatar.jpg");
-        const title = firstSub.title;
+      Articles.getSubscriptions((json)=>{
+        this.setStateByWidth();
+        // console.log(json);
+        // const firstSub = json.subscriptions[0];
+        // // const src = require(firstSub.iconUrl);
+        // const src = require("./img/avatar.jpg");
+        // const title = firstSub.title;
         }, (json)=>{
           console.log(json);
       });
@@ -245,6 +255,7 @@ class App extends Component {
     }
     
   }
+
 }
 
 export default App;

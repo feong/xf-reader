@@ -24,7 +24,7 @@ class SubscriptionsItem extends Component {
 class Subscriptions extends Component {
     render() {
         return (
-            <ul className="subscriptionsList" style={{minWidth: this.props.thin ? "53px" : "500px"}}>
+            <ul className="subscriptionsList" style={{width: this.props.thin ? "54px" : "300px", height: document.body.scrollHeight}}>
                 {this.props.subscriptions.map(
                     sub => <SubscriptionsItem key={sub.id} src={sub.iconUrl} title={sub.title} count={sub.count} thin={this.props.thin} onClick={()=>{this.props.subscriptionClicked(sub.id)}}/>
                 )}

@@ -21,9 +21,11 @@
 .subscriptionsList {
     margin: 0px;
     padding: 0px;
-    min-width: 500px;
-    max-width: 500px;
-    flex: auto;
+    width: 400px;
+    overflow-y: scroll;
+    /*min-width: 500px;
+    max-width: 500px;*/
+    flex: none;
     /*animation: turnThin 1s forwards;*/
 }
 

@@ -1,5 +1,5 @@
 import InoreaderRequest from '../util/InoreaderRequest';
-const TEST = true;
+const TEST = false;
 
 class Articles {
     get subscriptions() {
@@ -27,6 +27,55 @@ class Articles {
         if(!this.unreadArticles) return null;
         let articles = this.unreadArticles.filter(a=>a.id === this.currentArticleID);
         return articles.length == 0 ? null : articles[0];
+    }
+
+    removeFeedburner(content) {
+        const feedburnerIndex = content.indexOf('feeds.feedburner.com');
+        if(feedburnerIndex > 0) {
+            const subString = content.substring(0, feedburnerIndex);
+            const firstIndex = subString.lastIndexOf('<div>',);
+
+            const lastIndex = content.indexOf('</div>', feedburnerIndex);
+
+            const feedburner = content.substring(firstIndex, lastIndex);
+            return content.replace(feedburner, '');
+        }
+        return content;
+    }
+
+    removeAds(content) {
+        const adsIndex = content.indexOf('Ads from Inoreader');
+        if(adsIndex > 0) {
+            const subString = content.substring(0, adsIndex);
+            const firstIndex = subString.lastIndexOf('<center>',);
+
+            const lastIndex = content.indexOf('</center>', adsIndex);
+
+            const adsContent = content.substring(firstIndex, lastIndex);
+            return content.replace(adsContent, '');
+        }
+        return content;
+    }
+
+    getShortId(longId) {
+        const lastIndex = longId.lastIndexOf('/');
+        const id16 = longId.substring(lastIndex + 1);
+        return id16.toString(10);
+    }
+
+    findStar(categories) {
+        let result = false;
+        categories.forEach((c)=>{
+            if(c.indexOf('/state/com.google/starred') > 0) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
+    freshStarState(article) {
+        article.star = this.findStar(article.categories);
+        console.log(article);
     }
 
     getSubscriptions(success, fail) {
@@ -95,7 +144,14 @@ class Articles {
             return;
         }
         InoreaderRequest.getUnreadArticles((json)=>{
-            const articles = JSON.parse(json).items;
+            const articles = json.items;
+            // if(TEST) {
+                articles.forEach((article)=>{
+                    this.freshStarState(article);
+                    article.summary.content = this.removeAds(article.summary.content);
+                    article.summary.content = this.removeFeedburner(article.summary.content);
+                });
+            // }
             this._unreadArticles = articles;
             if(success) {
                 this._unreadArticles = articles;
@@ -108,12 +164,12 @@ class Articles {
 
     starArticle(success, fail, article, stared) {
         article.star = stared;
-        // TODO start it on server
-    }
-
-    unstarArticle(success, fail, article) {
-        article.star = false;
-        // TODO start it on server
+        const id = this.getShortId(article.id);
+        if(stared) {
+            InoreaderRequest.addStar(null, null, id);
+        } else {
+            InoreaderRequest.removeStar(null, null, id);
+        }
     }
 
     laterArticle(success, fail, article) {
