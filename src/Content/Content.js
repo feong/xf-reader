@@ -14,15 +14,15 @@ class Content extends Component {
         }
         const timeStamp = new Date(article.published * 1000).toLocaleString();
         return (
-            <div className="content" style={{height: document.body.scrollHeight}}>
-                <div className="innerContent">
-                <div className="functionBar">
-                    <span className="starButton" style={{color: article.star ? "yellow" : "rgba(0, 0, 0, 0.5)"}} onClick={this.itemStar.bind(this)}>★</span>
-                    <span className="plusButton">+</span>
+            <div className="content">
+                <div className="panelHeader">
+                    <img className="starButton" onClick={this.itemStar.bind(this)} src={article.star ? require("../img/star.svg") : require("../img/unstar.svg")}/>
+                    <img className="laterButton" src={article.later ? require("../img/add.svg") : require("../img/unadd.svg")}/>
                 </div>
-                <h1 className="title">{article.title}</h1>
-                <h5 className="author">{article.origin.title} - {article.author || "匿名"} - {timeStamp}</h5>
-                <article className="article" dangerouslySetInnerHTML={{__html: article.summary.content}}/>
+                <div className="innerContent" style={{height: document.body.scrollHeight - 90}}>
+                    <h1 className="title">{article.title}</h1>
+                    <h5 className="author">{article.origin.title} - {article.author || "匿名"} - {timeStamp}</h5>
+                    <article className="article" dangerouslySetInnerHTML={{__html: article.summary.content}}/>
                 </div> 
             </div>
         );

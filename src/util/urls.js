@@ -13,6 +13,9 @@ export const STAR_TAG = `user/-/state/com.google/starred`;
 export const READ_TAG = `user/-/state/com.google/read`;
 export const LATER_TAG = `user/-/state/com.google/like`;
 
+export const READ_LIST_ID = `/state/com.google/reading-list`;
+export const STAR_ID = `/state/com.google/starred`;
+
 const URLS = 
 {
     LOGIN: `${INOREADER_HOST}/oauth2/auth?client_id=${APP_ID}&redirect_uri=${APP_URL}&response_type=code&scope=${APP_PRI}&state=${APP_STR}`,

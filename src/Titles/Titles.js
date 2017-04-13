@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Titles.css';
+import {MEDIUM_GREEN} from '../util/colors';
 
 let selectedItem;
 class TitleItem extends Component {
@@ -35,15 +36,15 @@ class TitleItem extends Component {
         const timeStamp = (now - publishDate) > 3600 * 24 ? publishDate.toLocaleDateString() : publishDate.toLocaleTimeString();
         const img = this.findTheFirstImgSrc(this.props.article);
         return (
-            <div className="titleItem" onClick={this.itemSelected.bind(this)} style={{backgroundColor:this.state.selected ? "slategray" : "lightgray"}}>
+            <div className="titleItem" onClick={this.itemSelected.bind(this)} style={{backgroundColor:this.state.selected ? MEDIUM_GREEN[5] : MEDIUM_GREEN[0]}}>
                 {img && <div className="titleImg" style={{backgroundImage:`url(${img})`}}/>}
                 <div className="titleTextBox" style={{color: this.state.read ? "darkgray" : "black"}}>
                     <p className="titleText">{this.props.title}</p>
                     <p className="titleAuthor">{this.props.subscription} - {this.props.author || "匿名"} - {timeStamp}</p>
                 </div>
                 <div className="titleButtons">
-                    <p className="titleStar" onClick={this.itemStar.bind(this)} style={{color: this.props.star ? "yellow" : "rgba(0, 0, 0, 0.5)"}}>★</p>
-                    <p className="titleLater" color={"yellow"}>＋</p>
+                    <img className="titleStar" onClick={this.itemStar.bind(this)} src={this.props.star ? require("../img/star.svg") : require("../img/unstar.svg")}/>
+                    <img className="titleLater" src={this.props.later ? require("../img/add.svg") : require("../img/unadd.svg")}/>
                 </div>
             </div>
         );
@@ -60,11 +61,18 @@ class Titles extends Component {
             // return (<ul className="titleList"></ul>);
         }
         return (
-            <ul className="titleList" style={{height: document.body.scrollHeight}}>
-                {this.props.contents.map(
-                    content => <TitleItem key={content.id} src={require("../img/avatar.jpg")} article={content.summary.content} title={content.title} subscription={content.origin.title} author={content.author} timeStamp={content.published * 1000} onClick={()=>{this.props.titleClicked(content.id)}} star={content.star} onStar={(stared)=>{this.props.onStar(content, stared)}}/>
-                )}
-            </ul>
+            <div className="titlePanel" > 
+                <div className="panelHeader">
+                    <img className="refreshButton" src={require('../img/refresh.svg')} alt="Refresh"/>
+                    <img className="readButton" src={require('../img/read.svg')} alt="Mark Read"/>
+                    <img className="allreadButton" src={require('../img/allread.svg')} alt="Mark All Read"/>
+                </div>
+                <ul className="titleList" style={{height: document.body.scrollHeight - 50}}>
+                    {this.props.contents.map(
+                        content => <TitleItem key={content.id} src={require("../img/avatar.jpg")} article={content.summary.content} title={content.title} subscription={content.origin.title} author={content.author} timeStamp={content.published * 1000} onClick={()=>{this.props.titleClicked(content.id)}} star={content.star} onStar={(stared)=>{this.props.onStar(content, stared)}}/>
+                    )}
+                </ul>
+            </div>
         );
     }
 }

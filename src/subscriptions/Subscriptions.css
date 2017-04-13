@@ -2,8 +2,7 @@
     display: flex;
     flex-flow: row nowrap;
     font-size: 1.6rem;
-    background-color: lightgray;
-    border: thin solid gray;
+    border: thin solid #dadbdb;
 }
 
 .subItemImg {
@@ -18,20 +17,17 @@
     margin-right: 10px;
 }
 
+.subscriptionsHeader{
+    margin: 0px;
+    padding: 0px;
+    height: 50px;
+    background-color: #8FBC94;
+}
+
 .subscriptionsList {
     margin: 0px;
     padding: 0px;
     width: 400px;
     overflow-y: scroll;
-    /*min-width: 500px;
-    max-width: 500px;*/
     flex: none;
-    /*animation: turnThin 1s forwards;*/
-}
-
-@keyframes turnThin {
-    to {
-        width: 53px;
-        min-width: 53px;
-    }
 }

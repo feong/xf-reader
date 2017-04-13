@@ -37,21 +37,21 @@ const HttpRequest = {
         request.onreadystatechange = ()=> {
             if(request.readyState === 4){
                 if(request.responseText === 'OK') {
-                    success(request.responseText);
+                    if(success) success(request.responseText);
                     return;
                 }
                 // TODO try catch?
                 let json = JSON.parse(request.responseText);
                 if(request.status === 200 && !json.error) {
-                    success(json);
+                    if(success) success(json);
                 } else {
-                    fail(json);
+                    if(fail) fail(json);
                 }
             }
         };
         request.onabort = request.onerror = ()=> {
             let json = JSON.parse(request.responseText);
-            fail(json);
+            if(fail) fail(json);
         };
         request.send();
     }

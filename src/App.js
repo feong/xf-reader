@@ -75,13 +75,15 @@ class App extends Component {
   }
 
   starArticle(article, stared) {
-    Articles.starArticle(null, null, article, stared);
+    Articles.starArticle(()=>{
+        this.setStateByWidth();
+    }, null, article, stared);
     this.setStateByWidth();
   }
 
   setStateByWidth() {
     const width = document.body.clientWidth;
-      this.setState({status:'3-columns'}); return;
+      // this.setState({status:'3-columns'}); return;
     if(width < 1000) {
       if(this.viewing === 'titles') {
           this.setState({status:'1-column-titles'});

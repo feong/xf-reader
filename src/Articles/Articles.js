@@ -1,4 +1,5 @@
 import InoreaderRequest from '../util/InoreaderRequest';
+import {READ_LIST_ID, STAR_ID} from '../util/urls.js'
 const TEST = false;
 
 class Articles {
@@ -75,7 +76,6 @@ class Articles {
 
     freshStarState(article) {
         article.star = this.findStar(article.categories);
-        console.log(article);
     }
 
     getSubscriptions(success, fail) {
@@ -87,6 +87,18 @@ class Articles {
                     }
                 });
             });
+            const allUnreadSubscriptions = subscriptionsUnreadCounts.filter(sub=>sub.id.indexOf(READ_LIST_ID) > 0);
+            if(allUnreadSubscriptions.length > 0) {
+                allUnreadSubscriptions[0].title = 'All Unread';
+                allUnreadSubscriptions[0].iconUrl = require('../img/allunread.svg');
+                subscriptions.splice(0, 0, allUnreadSubscriptions[0]);
+            }
+            const allStarSubscriptions = subscriptionsUnreadCounts.filter(sub=>sub.id.indexOf(STAR_ID) > 0);
+            if(allStarSubscriptions.length > 0) {
+                allStarSubscriptions[0].title = 'All Starred';
+                allStarSubscriptions[0].iconUrl = require('../img/star.svg');
+                subscriptions.push(allStarSubscriptions[0]);
+            }
         }
 
         if(TEST) {
@@ -164,11 +176,21 @@ class Articles {
 
     starArticle(success, fail, article, stared) {
         article.star = stared;
+
+        const starSub = this.subscriptions.filter(sub=>sub.id.indexOf(STAR_ID) > 0);
+        if(starSub.length > 0) {
+            if (stared) {
+                starSub[0].count++;
+            } else {
+                starSub[0].count--;
+            }
+        }
+
         const id = this.getShortId(article.id);
         if(stared) {
-            InoreaderRequest.addStar(null, null, id);
+            InoreaderRequest.addStar(success, null, id);
         } else {
-            InoreaderRequest.removeStar(null, null, id);
+            InoreaderRequest.removeStar(success, null, id);
         }
     }
 

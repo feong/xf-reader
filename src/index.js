@@ -6,6 +6,8 @@ import App from './App';
 import './index.css';
 
 //npm run server && NODE_PATH=./src npm start
+//npm run server && npm start
+//xiaofengreader@xiaofengreader.com -> 123qwe
 ReactDOM.render(
   <App search={window.location.search}/>,
   document.getElementById('root')

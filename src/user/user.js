@@ -30,6 +30,10 @@ class User {
     get expiresDate() {
         return localStorage.expiresDate;
     }
+
+    logout() {
+        localStorage.accessToken = null;
+    }
 }
 
 const user = new User();
