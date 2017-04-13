@@ -1,0 +1,75 @@
+.titleItem {
+    display: flex;
+    flex-flow: row nowrap;
+    font-size: 1.6rem;
+    border: thin solid #dadbdb;
+}
+
+.titleImg {
+    height: 64px;
+    width: 64px;
+    margin: 18px 0px 18px 18px;
+    background-size: cover;
+    background-position: center;
+    background-repeat:no-repeat;
+    flex: none;
+}
+
+.titleTextBox {
+    flex: auto;
+    margin: 5px 20px 5px 18px;
+}
+
+.titleAuthor {
+    font-size: 1.2rem;
+}
+
+.titleButtons {
+    flex: none;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+    margin-right: 10px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.titleButtons > p {
+    margin: 0px;
+    padding: 0px;
+}
+
+.titleStar {
+    width: 28px;
+}
+
+.titleLater {
+    width: 28px;
+}
+
+.titlePanel {
+    min-width: 400px;
+    max-width: 500px;
+    flex: auto;
+}
+
+.refreshButton {
+    margin: 16px;
+    width: 28px;
+}
+
+.readButton {
+    margin: 16px;
+    width: 28px;
+}
+
+.allreadButton {
+    margin: 16px;
+    width: 28px;
+}
+
+.titleList {
+    margin: 0px;
+    padding: 0px;
+    overflow-y: scroll;
+}
