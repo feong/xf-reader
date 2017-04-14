@@ -68,8 +68,19 @@
     width: 28px;
 }
 
+.titleListPanel {
+    overflow-y: scroll;
+}
+
+.titleListPanel > p {
+    text-align: center;
+    font-size: 1.3rem;
+    background: yellow;
+    margin: 0px;
+    padding: 10px;
+}
+
 .titleList {
     margin: 0px;
     padding: 0px;
-    overflow-y: scroll;
 }

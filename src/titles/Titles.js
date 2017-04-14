@@ -55,6 +55,13 @@ class Titles extends Component {
     componentWillUnmount() {
         selectedItem = null;
     }
+    onScrolling(e) {
+        var element = e.target;
+        if (element.scrollHeight - element.scrollTop === element.clientHeight)
+        {
+            console.log('scrolled');
+        }
+    }
     render() {
         if(!this.props.contents) {
             return null;
@@ -67,11 +74,14 @@ class Titles extends Component {
                     <img className="readButton" src={require('../img/read.svg')} alt="Mark Read"/>
                     <img className="allreadButton" src={require('../img/allread.svg')} alt="Mark All Read"/>
                 </div>
-                <ul className="titleList" style={{height: document.body.scrollHeight - 50}}>
-                    {this.props.contents.map(
-                        content => <TitleItem key={content.id} src={require("../img/avatar.jpg")} article={content.summary.content} title={content.title} subscription={content.origin.title} author={content.author} timeStamp={content.published * 1000} onClick={()=>{this.props.titleClicked(content.id)}} star={content.star} onStar={(stared)=>{this.props.onStar(content, stared)}}/>
-                    )}
-                </ul>
+                <div className="titleListPanel" style={{height: document.body.scrollHeight - 50}} onScroll={this.onScrolling.bind(this)}>
+                    <ul className="titleList">
+                        {this.props.contents.map(
+                            content => <TitleItem key={content.id} src={require("../img/avatar.jpg")} article={content.summary.content} title={content.title} subscription={content.origin.title} author={content.author} timeStamp={content.published * 1000} onClick={()=>{this.props.titleClicked(content.id)}} star={content.star} onStar={(stared)=>{this.props.onStar(content, stared)}}/>
+                        )}
+                    </ul>
+                    <p><b>Load more</b></p>
+                </div>
             </div>
         );
     }
