@@ -50,15 +50,6 @@ class App extends Component {
       return decodeURIComponent((new RegExp('[?|&]' + name + '=([^&;]+?)(&|#|;|$)').exec(location.search)||[""])[1].replace(/\+/g, '%20'))||null;
   }
 
-  titleClicked(id) {
-    this.viewing = 'content';
-    if(Articles.currentArticleID === id) return;
-
-    Articles.currentArticleID = id;
-    this.setStateByWidth();
-    // this.setState({status:'content'});
-  }
-
   subscriptionClicked(id) {
     this.viewing = 'titles';
     if(Articles.subscriptionsID === id) return;
@@ -71,6 +62,18 @@ class App extends Component {
     }, ()=>{}, id);
     // this.setState({status:'loading'});
     this.loading = true;
+    this.setStateByWidth();
+  }
+
+  clickArticle(article) {
+    this.viewing = 'content';
+    if(Articles.currentArticleID === article.id) return;
+
+    Articles.currentArticleID = article.id;
+
+    Articles.readArticle(()=>{
+        // this.setStateByWidth();
+    }, null, article);
     this.setStateByWidth();
   }
 
@@ -97,6 +100,10 @@ class App extends Component {
     }
   }
 
+  continueLoad() {
+    Articles.getContinueArticles(()=>{this.setStateByWidth()}, null);
+  }
+
   render() {
     if(this.state.status === 'init') {
       const defaultAvatarSRC = require("./img/avatar.jpg");
@@ -113,7 +120,7 @@ class App extends Component {
     } else if(this.state.status === '1-column-titles') {
       return (
         <div className="app">
-          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)} onStar={this.starArticle.bind(this)}/>
+          <Titles contents={Articles.unreadArticles} clickArticle={this.clickArticle.bind(this)} onStar={this.starArticle.bind(this)} onContinueLoad={this.continueLoad.bind(this)} hasMore={Articles.continueStr !== null}/>
         </div>
       );
     } else if(this.state.status === '1-column-content') {
@@ -129,7 +136,7 @@ class App extends Component {
           <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)} thin={this.viewing === 'content' && document.body.clientWidth < 1500}/>
           {this.loading && <Loading/>}
           {/* If it is loading, nulls will be return of following components.*/}
-          <Titles contents={Articles.unreadArticles} titleClicked={this.titleClicked.bind(this)} onStar={this.starArticle.bind(this)}/>
+          <Titles contents={Articles.unreadArticles} clickArticle={this.clickArticle.bind(this)} onStar={this.starArticle.bind(this)} onContinueLoad={this.continueLoad.bind(this)} hasMore={Articles.continueStr !== null}/>
           <Content content={Articles.currentArticle} onStar={this.starArticle.bind(this)}/>
         </div>
         

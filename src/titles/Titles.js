@@ -4,14 +4,16 @@ import {MEDIUM_GREEN} from '../util/colors';
 
 let selectedItem;
 class TitleItem extends Component {
-    state = {selected: false, read: false, star: false}
+    state = {selected: false, star: false}
     itemSelected() {
-        if(selectedItem) selectedItem.setState({selected:false});
-        this.props.onClick();
-        if(!this.read) {
-            // TODO: make this readed on the Server
+        if(selectedItem === this) {
+            return;
         }
-        this.setState({selected: true, read: true});
+        if(selectedItem) {
+            selectedItem.setState({selected:false});
+        }
+        this.props.clickArticle();
+        this.setState({selected: true});
         selectedItem = this;
     }
     itemStar(event) {
@@ -38,7 +40,7 @@ class TitleItem extends Component {
         return (
             <div className="titleItem" onClick={this.itemSelected.bind(this)} style={{backgroundColor:this.state.selected ? MEDIUM_GREEN[5] : MEDIUM_GREEN[0]}}>
                 {img && <div className="titleImg" style={{backgroundImage:`url(${img})`}}/>}
-                <div className="titleTextBox" style={{color: this.state.read ? "darkgray" : "black"}}>
+                <div className="titleTextBox" style={{color: this.props.read ? "darkgray" : "black"}}>
                     <p className="titleText">{this.props.title}</p>
                     <p className="titleAuthor">{this.props.subscription} - {this.props.author || "匿名"} - {timeStamp}</p>
                 </div>
@@ -52,14 +54,17 @@ class TitleItem extends Component {
 }
 
 class Titles extends Component {
+    state = {loading: false};
     componentWillUnmount() {
         selectedItem = null;
     }
     onScrolling(e) {
         var element = e.target;
-        if (element.scrollHeight - element.scrollTop === element.clientHeight)
-        {
-            console.log('scrolled');
+        if (element.scrollHeight - element.scrollTop === element.clientHeight && this.props.hasMore){
+            this.props.onContinueLoad();
+            this.setState({loading: true});
+        } else if (element.scrollHeight - element.scrollTop - 33 < element.clientHeight && this.props.hasMore) {
+            this.setState({loading: false});
         }
     }
     render() {
@@ -77,10 +82,10 @@ class Titles extends Component {
                 <div className="titleListPanel" style={{height: document.body.scrollHeight - 50}} onScroll={this.onScrolling.bind(this)}>
                     <ul className="titleList">
                         {this.props.contents.map(
-                            content => <TitleItem key={content.id} src={require("../img/avatar.jpg")} article={content.summary.content} title={content.title} subscription={content.origin.title} author={content.author} timeStamp={content.published * 1000} onClick={()=>{this.props.titleClicked(content.id)}} star={content.star} onStar={(stared)=>{this.props.onStar(content, stared)}}/>
+                            content => <TitleItem key={content.id} src={require("../img/avatar.jpg")} article={content.summary.content} title={content.title} subscription={content.origin.title} author={content.author} read={content.read} timeStamp={content.published * 1000} clickArticle={()=>{this.props.clickArticle(content)}} star={content.star} onStar={(stared)=>{this.props.onStar(content, stared)}}/>
                         )}
                     </ul>
-                    <p><b>Load more</b></p>
+                    {this.props.hasMore && (this.state.loading ? <p><b>Loading more</b></p> : <p><b>Load more</b></p>)}
                 </div>
             </div>
         );

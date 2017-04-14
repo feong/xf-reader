@@ -21,13 +21,17 @@ class Articles {
 
     get currentArticleID() {
         return this._currentArticleID;
-    }    
+    }
 
     get currentArticle() {
         // if(TEST) return JSON.parse(testContents).items[0];
         if(!this.unreadArticles) return null;
         let articles = this.unreadArticles.filter(a=>a.id === this.currentArticleID);
         return articles.length == 0 ? null : articles[0];
+    }
+
+    get continueStr() {
+        return this._continueStr || null;
     }
 
     removeFeedburner(content) {
@@ -76,6 +80,14 @@ class Articles {
 
     freshStarState(article) {
         article.star = this.findStar(article.categories);
+    }
+
+    processArticles(articles) {
+        articles.forEach((article)=>{
+            this.freshStarState(article);
+            article.summary.content = this.removeAds(article.summary.content);
+            article.summary.content = this.removeFeedburner(article.summary.content);
+        });
     }
 
     getSubscriptions(success, fail) {
@@ -145,6 +157,7 @@ class Articles {
     getUnreadArticles(success, fail, id) {
         this._unreadArticles = null;
         this._subscriptionsID = id;
+        this._loadingContinue = false;
         if(TEST) {
             const articles = JSON.parse(testContents).items;
             if(success) {
@@ -157,21 +170,39 @@ class Articles {
         }
         InoreaderRequest.getUnreadArticles((json)=>{
             const articles = json.items;
-            // if(TEST) {
-                articles.forEach((article)=>{
-                    this.freshStarState(article);
-                    article.summary.content = this.removeAds(article.summary.content);
-                    article.summary.content = this.removeFeedburner(article.summary.content);
-                });
-            // }
+            this.processArticles(articles);
             this._unreadArticles = articles;
-            if(success) {
-                this._unreadArticles = articles;
+            this._continueStr = json.continuation || null;
+            if(success && this._subscriptionsID === id) {
                 success(articles);
             }
         },()=>{
             if(fail) fail();
         }, id);
+    }
+
+    getContinueArticles(success, fail) {
+        if(this._loadingContinue) return;
+
+        this._loadingContinue = true;
+        if(!this.subscriptionsID || !this.continueStr) {
+            if(fail) fail();
+            return;
+        }
+
+        InoreaderRequest.continueLoad((json)=>{
+            this._loadingContinue = false;
+            const articles = json.items;
+            this.processArticles(articles);
+            articles.forEach(a => this.unreadArticles.push(a));
+            this._continueStr = json.continuation || null;
+            if(success) {
+                success(this.unreadArticles);
+            }
+        },()=>{
+            this._loadingContinue = false;
+            if(fail) fail();
+        }, this.subscriptionsID, this.continueStr);
     }
 
     starArticle(success, fail, article, stared) {
@@ -192,6 +223,27 @@ class Articles {
         } else {
             InoreaderRequest.removeStar(success, null, id);
         }
+    }
+
+    readArticle(success, fail, article) {
+        if(article.read && success) {
+            article.read = true;
+            success();
+            return;
+        }
+
+        article.read = true;
+        const readSub = this.subscriptions.filter(sub=>sub.id.indexOf(READ_LIST_ID) > 0);
+        if(readSub.length > 0) {
+            readSub[0].count--;
+        }
+        const subsription = this.subscriptions.filter(sub=>sub.id === article.origin.streamId);
+        if(subsription.length > 0) {
+            subsription[0].count--;
+        }
+
+        const id = this.getShortId(article.id);
+        InoreaderRequest.read(success, null, id);
     }
 
     laterArticle(success, fail, article) {

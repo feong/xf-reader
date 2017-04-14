@@ -102,8 +102,18 @@ const InoreaderRequest = {
         this.request.get(url, success, fail);
     },
 
+    read(success, fail, id) {
+        const url = `${URLS.READ}&i=${id}`;
+        this.request.get(url, success, fail);
+    },
+
     getStarArticles(success, fail) {
         const url = `${URLS.ARTICLES}/user/-/state/com.google/starred`;
+        this.request.get(url, success, fail);
+    },
+
+    continueLoad(success, fail, id, continueStr) {
+        const url = `${URLS.ARTICLES}/${id}?&xt=${READ_TAG}&c=${continueStr}`;
         this.request.get(url, success, fail);
     },
 

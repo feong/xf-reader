@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
+import ReactDom from 'react-dom';
+
 import './Content.css';
 
 class Content extends Component {
+    lastArticle;
+    componentDidUpdate() {
+        if(this.lastArticle && this.lastArticle !== this.props.content) {
+            ReactDom.findDOMNode(this.refs.article).scrollTop = 0;
+        }
+        this.lastArticle = this.props.content;
+    }
     itemStar(event) {
         event.stopPropagation();
         this.props.onStar(this.props.content, !this.props.content.star);
@@ -19,7 +28,7 @@ class Content extends Component {
                     <img className="starButton" onClick={this.itemStar.bind(this)} src={article.star ? require("../img/star.svg") : require("../img/unstar.svg")}/>
                     <img className="laterButton" src={article.later ? require("../img/add.svg") : require("../img/unadd.svg")}/>
                 </div>
-                <div className="innerContent" style={{height: document.body.scrollHeight - 90}}>
+                <div className="innerContent" ref="article" style={{height: document.body.scrollHeight - 90}}>
                     <h1 className="title">{article.title}</h1>
                     <h5 className="author">{article.origin.title} - {article.author || "匿名"} - {timeStamp}</h5>
                     <article className="article" dangerouslySetInnerHTML={{__html: article.summary.content}}/>
