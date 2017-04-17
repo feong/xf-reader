@@ -26,7 +26,8 @@ const URLS =
     ARTICLES: `${SERVER_INOREADER_API}/stream/contents`,
     ADD_STAR: `${SERVER_INOREADER_API}/edit-tag?a=${STAR_TAG}`,
     REMOVE_STAR: `${SERVER_INOREADER_API}/edit-tag?r=${STAR_TAG}`,
-    READ: `${SERVER_INOREADER_API}/edit-tag?a=${READ_TAG}`
+    READ: `${SERVER_INOREADER_API}/edit-tag?a=${READ_TAG}`,
+    READ_ALL: `${SERVER_INOREADER_API}/mark-all-as-read`
 };
 
 export default URLS;

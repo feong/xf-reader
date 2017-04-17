@@ -20,6 +20,7 @@ class App extends Component {
   loading = false;
   componentWillMount() {
     const search = this.props.search;
+    // User.accessToken = null;
     if(User.accessToken) {
       let now = new Date();
       let expiresDate = User.expiresDate;
@@ -48,6 +49,16 @@ class App extends Component {
 
   getURLParameter(name) {
       return decodeURIComponent((new RegExp('[?|&]' + name + '=([^&;]+?)(&|#|;|$)').exec(location.search)||[""])[1].replace(/\+/g, '%20'))||null;
+  }
+
+  getSubscriptions(callback) {
+      Articles.getSubscriptions((json)=>{
+          this.setStateByWidth();
+          if(callback) callback(true);
+        }, (json)=>{
+          console.log(json);
+          if(callback) callback(false);
+      });
   }
 
   subscriptionClicked(id) {
@@ -84,6 +95,32 @@ class App extends Component {
     this.setStateByWidth();
   }
 
+  readLoaded() {
+    Articles.readLoadedArticles(()=>{
+      this.setStateByWidth();
+    }, null);
+    this.setStateByWidth();
+  }
+
+  readSubscriptionArticles() {
+    Articles.readSubscriptionArticles(()=>{
+      this.setStateByWidth();
+    }, null);
+    this.setStateByWidth();
+  }
+
+  readAllUnreadArticles() {
+    Articles.readAllUnreadArticles(()=>{
+      this.setStateByWidth();
+    }, null);
+    this.setStateByWidth();
+  }
+
+  exit() {
+      User.accessToken = null;
+      this.setState({status:'init'});
+  }
+
   setStateByWidth() {
     const width = document.body.clientWidth;
       // this.setState({status:'3-columns'}); return;
@@ -114,13 +151,23 @@ class App extends Component {
     } else if(this.state.status === '1-column-subscriptions') {
       return (
         <div className="app">
-          <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)}/>
+          <Subscriptions subscriptions={Articles.subscriptions}
+                         subscriptionClicked={this.subscriptionClicked.bind(this)} 
+                         onRefresh={this.getSubscriptions.bind(this)} 
+                         onExit={this.exit.bind(this)}
+                         onReadAllUnreadArticles={this.readAllUnreadArticles.bind(this)}/>
         </div>
       );
     } else if(this.state.status === '1-column-titles') {
       return (
         <div className="app">
-          <Titles contents={Articles.unreadArticles} clickArticle={this.clickArticle.bind(this)} onStar={this.starArticle.bind(this)} onContinueLoad={this.continueLoad.bind(this)} hasMore={Articles.continueStr !== null}/>
+          <Titles contents={Articles.unreadArticles} 
+                  clickArticle={this.clickArticle.bind(this)} 
+                  onStar={this.starArticle.bind(this)} 
+                  onContinueLoad={this.continueLoad.bind(this)} 
+                  hasMore={Articles.continueStr !== null}
+                  onReadLoaded={this.readLoaded.bind(this)}
+                  onReadSubscriptionArticles={this.readSubscriptionArticles.bind(this)}/>
         </div>
       );
     } else if(this.state.status === '1-column-content') {
@@ -133,10 +180,21 @@ class App extends Component {
       return (
         
         <div className="app">
-          <Subscriptions subscriptions={Articles.subscriptions} subscriptionClicked={this.subscriptionClicked.bind(this)} thin={this.viewing === 'content' && document.body.clientWidth < 1500}/>
+          <Subscriptions subscriptions={Articles.subscriptions}
+                         subscriptionClicked={this.subscriptionClicked.bind(this)} 
+                         onRefresh={this.getSubscriptions.bind(this)} 
+                         onExit={this.exit.bind(this)}
+                         onReadAllUnreadArticles={this.readAllUnreadArticles.bind(this)}
+                         thin={this.viewing === 'content' && document.body.clientWidth < 1500}/>
           {this.loading && <Loading/>}
           {/* If it is loading, nulls will be return of following components.*/}
-          <Titles contents={Articles.unreadArticles} clickArticle={this.clickArticle.bind(this)} onStar={this.starArticle.bind(this)} onContinueLoad={this.continueLoad.bind(this)} hasMore={Articles.continueStr !== null}/>
+          <Titles contents={Articles.unreadArticles} 
+                  clickArticle={this.clickArticle.bind(this)} 
+                  onStar={this.starArticle.bind(this)} 
+                  onContinueLoad={this.continueLoad.bind(this)} 
+                  hasMore={Articles.continueStr !== null}
+                  onReadLoaded={this.readLoaded.bind(this)}
+                  onReadSubscriptionArticles={this.readSubscriptionArticles.bind(this)}/>
           <Content content={Articles.currentArticle} onStar={this.starArticle.bind(this)}/>
         </div>
         
@@ -175,93 +233,29 @@ class App extends Component {
           console.log(json);
       });
     } else if(this.state.status === 'login') {
-      Articles.getSubscriptions((json)=>{
-        this.setStateByWidth();
-        // console.log(json);
-        // const firstSub = json.subscriptions[0];
-        // // const src = require(firstSub.iconUrl);
-        // const src = require("./img/avatar.jpg");
-        // const title = firstSub.title;
-        }, (json)=>{
-          console.log(json);
-      });
+      this.getSubscriptions();
+      // Articles.getSubscriptions((json)=>{
+      //   this.setStateByWidth();
+      //   // console.log(json);
+      //   // const firstSub = json.subscriptions[0];
+      //   // // const src = require(firstSub.iconUrl);
+      //   // const src = require("./img/avatar.jpg");
+      //   // const title = firstSub.title;
+      //   }, (json)=>{
+      //     console.log(json);
+      // });
     } else if(this.state.status === 'guest') {
-      Articles.getSubscriptions((json)=>{
-        this.setStateByWidth();
-        // this.setState({status:'subscriptions'});
-      }, ()=>{
+      this.getSubscriptions();
+      // Articles.getSubscriptions((json)=>{
+      //   this.setStateByWidth();
+      //   // this.setState({status:'subscriptions'});
+      // }, ()=>{
 
-      });
+      // });
     } 
     return (
       <Loading/>
     );
-
-
-    let isLogin = false;
-    const search = this.props.search;
-    if(User.accessToken) {
-      let now = new Date();
-      let expiresDate = User.expiresDate;
-      if(now > expiresDate) {
-        // Fresh Token
-        InoreaderRequest.refreshToken((json)=>{
-        User.accessToken = json.access_token;
-        User.tokenType = json.token_type;
-        User.refreshToken = json.refresh_token;
-        User.expires = json.expires_in;
-        isLogin = true;
-        }, (json)=>{
-          console.log(json);
-        });
-      } else {
-        isLogin = true;
-      }
-    } else if(search) {
-      // let state = getURLParameter('state');
-      let code = this.getURLParameter('code');
-
-      InoreaderRequest.requestToken(code, (json)=>{
-        User.accessToken = json.access_token;
-        User.tokenType = json.token_type;
-        User.refreshToken = json.refresh_token;
-        User.expires = json.expires_in;
-        isLogin = true;
-      }, (json)=>{
-        console.log(json);
-      });
-    }
-
-    if(isLogin) {
-      return (
-        <div className="App">
-          <Loading/>
-        </div>
-      );
-      InoreaderRequest.getSubscriptions((json)=>{
-        console.log(json);
-        const firstSub = json.subscriptions[0];
-        // const src = require(firstSub.iconUrl);
-        const src = require("./img/avatar.jpg");
-        const title = firstSub.title;
-        return (
-          <div className="App">
-            <Subscriptions src={src} title={title}/>
-          </div>
-        );
-      }, (json)=>{
-        console.log(json);
-      });
-    } else {
-      const defaultAvatarSRC = require("./img/avatar.jpg");
-      const avatarSRC = this.props.avatarSRC ? this.props.avatarSRC : defaultAvatarSRC;
-
-      return (
-        <div className="App">
-          <Login avatarSRC={avatarSRC}/>
-        </div>
-      );
-    }
     
   }
 

@@ -65,6 +65,7 @@ class Titles extends Component {
             this.setState({loading: true});
         } else if (element.scrollHeight - element.scrollTop - 33 < element.clientHeight && this.props.hasMore) {
             this.setState({loading: false});
+            // TODO this will change back to no-loading.
         }
     }
     render() {
@@ -76,8 +77,8 @@ class Titles extends Component {
             <div className="titlePanel" > 
                 <div className="panelHeader">
                     <img className="refreshButton" src={require('../img/refresh.svg')} alt="Refresh"/>
-                    <img className="readButton" src={require('../img/read.svg')} alt="Mark Read"/>
-                    <img className="allreadButton" src={require('../img/allread.svg')} alt="Mark All Read"/>
+                    <img className="readButton" src={require('../img/read.svg')} alt="Mark Read" onClick={this.props.onReadLoaded}/>
+                    <img className="allreadButton" src={require('../img/allread.svg')} alt="Mark All Read" onClick={this.props.onReadSubscriptionArticles}/>
                 </div>
                 <div className="titleListPanel" style={{height: document.body.scrollHeight - 50}} onScroll={this.onScrolling.bind(this)}>
                     <ul className="titleList">

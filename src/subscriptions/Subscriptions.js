@@ -24,10 +24,23 @@ class SubscriptionsItem extends Component {
 }
 
 class Subscriptions extends Component {
+    state = {loading: false};
+    onRefresh() {
+        this.props.onRefresh((result)=>{
+            result && this.setState({loading: false});
+        });
+        this.setState({loading: true});
+    }
     render() {
         return (
             <div className="subscriptionsPanel">
-                <div className="panelHeader"/>
+                <div className="panelHeader">
+                    {this.props.thin || <img className="refreshingButton" src={require('../img/refresh.svg')} alt="Refresh" onClick={this.onRefresh.bind(this)} style={{display: this.state.loading ? 'block' : 'none'}}/>}
+                    {this.props.thin || <img className="refreshButton" src={require('../img/refresh.svg')} alt="Refresh" onClick={this.onRefresh.bind(this)} style={{display: this.state.loading ? 'none' : 'block'}}/>}
+                    {this.props.thin || <img className="allreadButton" src={require('../img/allread.svg')} alt="Mark All Read" onClick={this.props.onReadAllUnreadArticles}/>}
+                    {this.props.thin || <div className="blankSpace"/>}
+                    {this.props.thin || <img className="exitButton" src={require('../img/exit.svg')} alt="Exit" onClick={this.props.onExit}/>}
+                </div>
                 <ul className="subscriptionsList" style={{width: this.props.thin ? "54px" : "300px", height: document.body.scrollHeight - 50}}>
                     {this.props.subscriptions.map(
                         sub => <SubscriptionsItem key={sub.id} id={sub.id} src={sub.iconUrl} title={sub.title} count={sub.count} thin={this.props.thin} onClick={()=>{this.props.subscriptionClicked(sub.id)}}/>

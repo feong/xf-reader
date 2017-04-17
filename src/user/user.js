@@ -1,6 +1,10 @@
 class User {
     set accessToken(value) {
-        localStorage.accessToken = value;
+        if (value === null) {
+            localStorage.removeItem('accessToken');
+        } else {
+            localStorage.accessToken = value;
+        }
     }
     get accessToken() {
         return localStorage.accessToken;

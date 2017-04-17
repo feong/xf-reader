@@ -36,7 +36,10 @@ const HttpRequest = {
         request.setRequestHeader(AUTHORIZATION, `${User.tokenType} ${User.accessToken}`);
         request.onreadystatechange = ()=> {
             if(request.readyState === 4){
-                if(request.responseText === 'OK') {
+                if(!request.responseText) {
+                    if(fail) fail(request.responseText);
+                    return;
+                } else if(request.responseText === 'OK') {
                     if(success) success(request.responseText);
                     return;
                 }
@@ -50,6 +53,11 @@ const HttpRequest = {
             }
         };
         request.onabort = request.onerror = ()=> {
+            // May be return twice
+            if(!request.responseText) {
+                if(fail) fail(request.responseText);
+                return;
+            }
             let json = JSON.parse(request.responseText);
             if(fail) fail(json);
         };
@@ -104,6 +112,16 @@ const InoreaderRequest = {
 
     read(success, fail, id) {
         const url = `${URLS.READ}&i=${id}`;
+        this.request.get(url, success, fail);
+    },
+
+    readMultiplies(success, fail, ids) {
+        const url = `${URLS.READ}${ids}`;
+        this.request.get(url, success, fail);
+    },
+
+    readAll(success, fail, id, ts) {
+        const url = ts ? `${URLS.READ_ALL}?&s=${id}&ts=${ts}` : `${URLS.READ_ALL}?&s=${id}`;
         this.request.get(url, success, fail);
     },
 

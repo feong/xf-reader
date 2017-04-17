@@ -173,6 +173,7 @@ class Articles {
             this.processArticles(articles);
             this._unreadArticles = articles;
             this._continueStr = json.continuation || null;
+            this._updated = json.updated;
             if(success && this._subscriptionsID === id) {
                 success(articles);
             }
@@ -225,13 +226,7 @@ class Articles {
         }
     }
 
-    readArticle(success, fail, article) {
-        if(article.read && success) {
-            article.read = true;
-            success();
-            return;
-        }
-
+    markArticleRead(article) {
         article.read = true;
         const readSub = this.subscriptions.filter(sub=>sub.id.indexOf(READ_LIST_ID) > 0);
         if(readSub.length > 0) {
@@ -241,9 +236,49 @@ class Articles {
         if(subsription.length > 0) {
             subsription[0].count--;
         }
+    }
 
+    readArticle(success, fail, article) {
+        if(article.read && success) {
+            article.read = true;
+            success();
+            return;
+        }
+
+        this.markArticleRead(article);
         const id = this.getShortId(article.id);
         InoreaderRequest.read(success, null, id);
+    }
+
+    readLoadedArticles(success, fail) {
+        let ids = '';
+        this.unreadArticles.forEach((article)=>{
+            if(!article.read) {
+                const id = this.getShortId(article.id);
+                ids += `&i=${id}`
+                this.markArticleRead(article);
+            }
+        });
+        if(ids.length === 0) {
+            if(success) success();
+        } else {
+            InoreaderRequest.readMultiplies(success, null, ids);
+        }
+    }
+
+    readSubscriptionArticles(success, fail) {
+        this.unreadArticles.forEach((article)=>{
+            if(!article.read) {
+                this.markArticleRead(article);
+            }
+        });
+        InoreaderRequest.readAll(success, null, this.subscriptionsID, this._updated);
+    }
+
+    readAllUnreadArticles(success, fail) {
+        const allUnreadSubscription = this.subscriptions.filter(sub=>sub.id.indexOf(READ_LIST_ID) > 0)[0];
+        this.subscriptions.forEach(sub => sub.count = 0);
+        InoreaderRequest.readAll(success, null, allUnreadSubscription.id);
     }
 
     laterArticle(success, fail, article) {

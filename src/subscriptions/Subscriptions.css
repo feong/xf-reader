@@ -29,5 +29,25 @@
     padding: 0px;
     width: 400px;
     overflow-y: scroll;
-    flex: none;
+}
+
+.refreshingButton {
+    margin: 16px;
+    width: 28px;
+    animation: rotating linear 4s infinite;
+}
+
+.blankSpace {
+    flex: auto;
+}
+
+.exitButton {
+    margin: 16px;
+    width: 28px;
+}
+
+@keyframes rotating{
+    to{
+        transform: rotate(360deg);
+    }
 }
