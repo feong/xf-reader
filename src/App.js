@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import './App.css';
 
 import Loading from './loading/Loading';
@@ -22,9 +23,10 @@ class App extends Component {
     const search = this.props.search;
     // User.accessToken = null;
     if(User.accessToken) {
-      let now = new Date();
-      let expiresDate = User.expiresDate;
-      this.setState({status: now > expiresDate ? 'expire' : 'login'});
+      // let now = new Date();
+      // let expiresDate = User.expiresDate;
+      // this.setState({status: now > expiresDate ? 'expire' : 'login'});
+      this.setState({status: 'login'});
     } else if(search) {
       this.setState({status: 'auth'});
     }
@@ -223,15 +225,15 @@ class App extends Component {
           console.log(json);
       });
     } else if(this.state.status === 'expire') {
-      InoreaderRequest.refreshToken((json)=>{
-        User.accessToken = json.access_token;
-        User.tokenType = json.token_type;
-        User.refreshToken = json.refresh_token;
-        User.expires = json.expires_in;
-        this.setState({status:'login'});
-        }, (json)=>{
-          console.log(json);
-      });
+      // InoreaderRequest.refreshToken((json)=>{
+      //   User.accessToken = json.access_token;
+      //   User.tokenType = json.token_type;
+      //   User.refreshToken = json.refresh_token;
+      //   User.expires = json.expires_in;
+      //   this.setState({status:'login'});
+      //   }, (json)=>{
+      //     console.log(json);
+      // });
     } else if(this.state.status === 'login') {
       this.getSubscriptions();
       // Articles.getSubscriptions((json)=>{

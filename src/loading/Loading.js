@@ -5,7 +5,7 @@ class Loading extends Component {
     render() {
         return (
             <div className="loadingBox">
-                <img className="loginAvatar" src={require("../img/avatar.jpg")} alt="Avatar"/>
+                <img className="loadingImg" src={require("../img/avatar.jpg")} alt="Avatar"/>
             </div>
         );
     }

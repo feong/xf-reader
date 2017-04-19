@@ -68,6 +68,22 @@ const HttpRequest = {
 
 const InoreaderRequest = {
     request: HttpRequest,
+    requestDependOnRefreshToken(success, fail) {
+        const expiresDate = User.expiresDate;
+        const now = new Date();
+        if(now > expiresDate) {
+            this.refreshToken((json)=>{
+                User.accessToken = json.access_token;
+                User.tokenType = json.token_type;
+                User.refreshToken = json.refresh_token;
+                User.expires = json.expires_in;
+                if(success) success();
+            }, fail);
+        } else {
+            if(success) success();
+        }
+    },
+
     requestToken(code, success, fail) {
         const body = `code=${code}&redirect_uri=${APP_URL}&client_id=${APP_ID}&client_secret=${APP_KEY}&scope=&grant_type=authorization_code`;
         this.request.post(URLS.TOKEN, body, success, fail);
@@ -79,67 +95,80 @@ const InoreaderRequest = {
     },
 
     getUserInfo(success, fail) {
-        this.request.get(URLS.USERINFO, success, fail);
+        const callback = ()=> this.request.get(URLS.USERINFO, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     getUnreadCounters(success, fail) {
-        this.request.get(URLS.UNREADERCOUNTERS, success, fail);
+        const callback = ()=> this.request.get(URLS.UNREADERCOUNTERS, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     getSubscriptions(success, fail) {
-        this.request.get(URLS.SUBSCRIPTIONS, success, fail);
+        const callback = ()=> this.request.get(URLS.SUBSCRIPTIONS, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     getUnreadArticles(success, fail, id) {
         const url = id ? `${URLS.ARTICLES}/${id}?&xt=${READ_TAG}` : `${URLS.ARTICLES}/&xt=${READ_TAG}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     getArticles(success, fail, id) {
         const url = id ? `${URLS.ARTICLES}/${id}` : `${URLS.ARTICLES}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     addStar(success, fail, id) {
         const url = `${URLS.ADD_STAR}&i=${id}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     removeStar(success, fail, id) {
         const url = `${URLS.REMOVE_STAR}&i=${id}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     read(success, fail, id) {
         const url = `${URLS.READ}&i=${id}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     readMultiplies(success, fail, ids) {
         const url = `${URLS.READ}${ids}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     readAll(success, fail, id, ts) {
         const url = ts ? `${URLS.READ_ALL}?&s=${id}&ts=${ts}` : `${URLS.READ_ALL}?&s=${id}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     getStarArticles(success, fail) {
         const url = `${URLS.ARTICLES}/user/-/state/com.google/starred`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     continueLoad(success, fail, id, continueStr) {
         const url = `${URLS.ARTICLES}/${id}?&xt=${READ_TAG}&c=${continueStr}`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     },
 
     test(success, fail) {
         // const url = `${URLS.ARTICLES}/feed%2Fhttp%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Fscience1`;
         const url = `${URLS.ARTICLES}/feed/http://feeds.feedburner.com/solidot?&xt=user/-/state/com.google/read`;
         // const url = `${URLS.ARTICLES}/feed%2fhttp%3a%2f%2ffeeds.feedburner.com%2fsolidot&xt=user/-/state/com.google/read`;
-        this.request.get(url, success, fail);
+        const callback = ()=> this.request.get(url, success, fail);
+        this.requestDependOnRefreshToken(callback, fail);
     }
 }
 
