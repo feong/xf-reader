@@ -7,7 +7,7 @@ import './index.css';
 
 //npm run server && NODE_PATH=./src npm start
 //npm run server && npm start
-//xiaofengreader@xiaofengreader.com -> 123qwe
+//xiaofengreader@xiaofengreader.com -> 123123
 ReactDOM.render(
   <App search={window.location.search}/>,
   document.getElementById('root')
